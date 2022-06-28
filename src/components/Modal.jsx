@@ -4,7 +4,7 @@ import {motion} from 'framer-motion'
 
 function Modal(props) {
   return (
-    <div className="modal-bg flex items-center justify-center fixed top-0 left-0 right-0 bottom-0 z-50 backdrop-blur-sm"
+    <div className="modal-bg flex items-center justify-center fixed top-0 left-0 right-0 bottom-0 z-50"
     style={{background: props.showMore ? 'rgba(0,0,0,.8)' : ''}}>
         <motion.div animate={{scale: 1}} initial={{scale: 0}} className='md:w-1/2 py-2 px-3 w-full rounded bg-white'>
             <header className='m-2 text-xl flex items-center justify-between'>

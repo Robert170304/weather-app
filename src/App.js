@@ -24,9 +24,10 @@ function App() {
   const [query, setQuery] = React.useState(userLocationCoords ? JSON.parse(userLocationCoords) : {q: currentUserCity ? currentUserCity : 'berlin' })
   const [units, setUnit] = React.useState('metric')
   const [weather, setWeather] = React.useState(null)
-  const [showMore, setShowMore] = React.useState(true)
+  const [showMore, setShowMore] = React.useState(false)
   const [showDropDown, setShowDropDown] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
+  const modalRef = React.useRef()
 
   React.useEffect(() => {
     (async function () {
@@ -37,7 +38,7 @@ function App() {
         setWeather(data)
       })
     })()
-  },[query, units])
+  },[query, units]);
 
   React.useEffect(() => {
     if (showMore || showDropDown) {
@@ -46,6 +47,18 @@ function App() {
         document.body.style.overflow = "auto";
     }
   })
+
+  // React.useEffect(() => {
+  //   function getClickOutSide(e) {
+  //     if(showMore && e.target !== modalRef.current) {
+  //       setShowMore(false);
+  //     }
+  //   }
+  //   window.addEventListener('click', getClickOutSide);
+  //   return () => {
+  //     window.removeEventListener('click', getClickOutSide);
+  //   }
+  // }, [showMore])
 
   function formatBg() {
     const thresold = units === 'metric'? 20 : 60
@@ -96,23 +109,24 @@ function App() {
 
   return (<>
     {showMore && <Modal showMore={showMore} 
+      ref={modalRef}
       handleCloseMore={handleCloseMore} 
       location={location}
       setLocation={setLocation}
       settingUserLocation={settingUserLocation} 
       isPending={isPending}
       detectUserLocation={detectUserLocation}/>} 
-    <AnimatePresence initial={false}>
+    <AnimatePresence>
       {showDropDown && 
       <motion.div key="content"
       initial="collapsed"
       animate="open"
       exit="collapsed"
       variants={{
-        open: { opacity: 1, height: "auto" },
-        collapsed: { opacity: 0, height: 0 }
+        open: { opacity: 1, height: 0 },
+        collapsed: { opacity: 0, height: "-50%" }
       }}
-      transition={{ duration: 0.8, ease: [0.04, 0.62, 0.23, 0.98] }}>
+      transition={{type:"spring", stiffness:"100", duration: 0.8, ease: [0.04, 0.62, 0.23, 0.98] }}>
         <DropDownContent 
           handleCloseMore={handleCloseMore} 
           weather={weather}/>

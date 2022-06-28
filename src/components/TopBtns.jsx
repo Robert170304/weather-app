@@ -3,12 +3,6 @@ import { UilSlidersVAlt } from '@iconscout/react-unicons'
 
 function TopBtns(props) {
 
-    const [isPending, startTransition] = React.useTransition()
-
-    function openModal() {
-        props.setShowMore(true)
-    }
-
     const cities = [
         {
             id: 1,
@@ -32,7 +26,7 @@ function TopBtns(props) {
             className='text-white text-lg font-medium mx-1.5'
             onClick={() => props.setQuery({q: city.title})}>{city.title}</button>
         })}
-        <UilSlidersVAlt className="text-white cursor-pointer mx-1.5" onClick={openModal}/>
+        <UilSlidersVAlt className="text-white cursor-pointer mx-1.5" onClick={() => props.setShowMore(true)}/>
     </div>
     </>
   )

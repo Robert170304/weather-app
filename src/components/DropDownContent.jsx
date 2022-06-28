@@ -1,14 +1,11 @@
 import React from 'react'
 import {UilCelsius, UilTimes, UilLocationArrow } from '@iconscout/react-unicons'
 import { iconUrlFromCode } from '../services/WeatherServices'
-import {motion} from 'framer-motion'
 
 
 function DropDownContent(props) {
   return (
-    <motion.div 
-    className='bg-gradient-to-b from-blue-500 to-slate-50 text-white p-4 fixed top-0 left-0 right-0 bottom-0 z-50 w-full h-full'
-    >
+    <div className='bg-gradient-to-b from-blue-500 to-slate-50 text-white p-4 fixed top-0 left-0 right-0 bottom-0 z-50 w-full h-full'>
         <header className='flex items-center justify-between'>
             <UilTimes className="cursor-pointer transition ease-out hover:scale-125" size={25} onClick={props.handleCloseMore} />
             <h4 className='text-xl text-slate-900 font-semibold'>Locations</h4>
@@ -63,7 +60,7 @@ function DropDownContent(props) {
                 </ul>
             </section>
         </div>
-    </motion.div>
+    </div>
   )
 }
 
