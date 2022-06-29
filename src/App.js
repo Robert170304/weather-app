@@ -19,16 +19,29 @@ import {motion, AnimatePresence} from 'framer-motion'
 function App() {
 
   const [location, setLocation] = React.useState("")
-  const currentUserCity = localStorage.getItem("usercity");
+  // const currentUserCity = localStorage.getItem("usercity");
   const userLocationCoords = localStorage.getItem("userCoords");
-  const [query, setQuery] = React.useState(userLocationCoords ? JSON.parse(userLocationCoords) : {q: currentUserCity ? currentUserCity : 'berlin' })
+  const [query, setQuery] = React.useState({q:'berlin' })
   const [units, setUnit] = React.useState('metric')
   const [weather, setWeather] = React.useState(null)
   const [showMore, setShowMore] = React.useState(false)
   const [showDropDown, setShowDropDown] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
-  const modalRef = React.forwardRef()
-  const [displayCurrentLocation, setDisplayCurrentLocation] = React.useState('No current location')
+  const modalRef = React.useRef()
+  const [userQuery, setUserQuery] = React.useState(JSON.parse(userLocationCoords))
+  const [displayCurrentLocation, setDisplayCurrentLocation] = React.useState(null)
+
+  React.useEffect(() => {
+    (async function() {
+      const msg = 'current location'
+      toast.info('Fetching weather for ' + msg)
+      await getFormattedData({...userQuery, units}).then((data) => {
+        toast.success(`Successfully fetched weather for ${data.name}, ${data.country}`)
+        setDisplayCurrentLocation(data)
+      })
+    })()
+  },[userQuery])
+    
 
   React.useEffect(() => {
     (async function () {
@@ -78,23 +91,22 @@ function App() {
     }
   }
 
-  function settingUserLocation() {
-    if(location){
-      startTransition(() => {
-        handleCloseMore()
-      })
-      localStorage.setItem("usercity", location);
-      localStorage.removeItem('userCoords');
-      setQuery({q: location})
-    }else if(location === "") {
-      alert('please provide your city name')
-    }
-  }
+  // function settingUserLocation() {
+  //   if(location){
+  //     startTransition(() => {
+  //       handleCloseMore()
+  //     })
+  //     localStorage.setItem("usercity", location);
+  //     localStorage.removeItem('userCoords');
+  //     setQuery({q: location})
+  //   }else if(location === "") {
+  //     alert('please provide your city name')
+  //   }
+  // }
 
   function detectUserLocation() {
     startTransition(() => {
       handleCloseMore()
-      setDisplayCurrentLocation({city: weather.name, country: weather.country})
     })
     if (navigator.geolocation) {
       toast.info('Fetching your location')
@@ -104,7 +116,7 @@ function App() {
         let coords = {lat, lon}
         localStorage.setItem("userCoords",JSON.stringify(coords));
         localStorage.removeItem('usercity');
-        setQuery(coords)
+        setUserQuery(coords)
       })
     }
   }
@@ -113,9 +125,9 @@ function App() {
     {showMore && <Modal showMore={showMore} 
       ref={modalRef}
       handleCloseMore={handleCloseMore} 
-      location={location}
-      setLocation={setLocation}
-      settingUserLocation={settingUserLocation} 
+      // location={location}
+      // setLocation={setLocation}
+      // settingUserLocation={settingUserLocation} 
       isPending={isPending}
       detectUserLocation={detectUserLocation}/>} 
     <AnimatePresence>
@@ -129,16 +141,16 @@ function App() {
         collapsed: { opacity: 0, height: "-50%" }
       }}
       transition={{type:"spring", stiffness:"100", duration: 0.8, ease: [0.04, 0.62, 0.23, 0.98] }}>
-        <DropDownContent displayCurrentLocation={displayCurrentLocation}
-          handleCloseMore={handleCloseMore} 
-          weather={weather}/>
+        <DropDownContent 
+        displayCurrentLocation={displayCurrentLocation}
+        handleCloseMore={handleCloseMore} />
       </motion.div>}
     </AnimatePresence>
     <div className={`App mx-auto m-4 px-3 py-3 bg-gradient-to-br ${formatBg()} h-fit shadow-xl shadow-gray-400 md:py-5 md:px-32`}>
-      <motion.button type='button' whileTap={{scale: 0.9}} className='text-white inline-flex' onClick={() => setShowDropDown(true)}>
-        <p>Petlad, IN</p>
+      {displayCurrentLocation && <motion.button type='button' whileTap={{scale: 0.9}} className='text-white inline-flex' onClick={() => setShowDropDown(true)}>
+        <p>{`${displayCurrentLocation.name}, ${displayCurrentLocation.country}`}</p>
         <UilAngleDown size={20}/>
-      </motion.button>
+      </motion.button>}
       <TopBtns setQuery={setQuery} showMore={showMore} setShowMore={setShowMore}/>
       <Inputs setQuery={setQuery} units={units} setUnit={setUnit}/>
       {weather && (

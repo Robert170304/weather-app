@@ -12,16 +12,14 @@ function Modal(props) {
                 <UilTimes className="mx-1 cursor-pointer transition ease-out hover:scale-125" size={25} onClick={props.handleCloseMore}/>
             </header>
             <div className='body flex items-center justify-center flex-col p-2 gap-x-0.5' style={{borderBottom: '1px solid lightgray', borderTop: '1px solid lightgray'}}>
-                <input type="text"
+                {/* <input type="text"
                     placeholder='Enter your city or town here'
                     className='text-xl font-light p-2 my-1 w-full capitalize'
                     onChange={(e) => props.setLocation(e.target.value)}
-                />
-                <span className='m-1.5'>OR</span>
+                /> */}
                 <motion.button whileTap={{scale: !props.location && 0.9}} type="button" 
-                className={`flex items-center justify-center text-white p-2 bg-red-${props.location ? 500 : 700} cursor-${props.location && 'not-allowed'} font-medium`} 
-                onClick={props.detectUserLocation}
-                disabled={props.location}>
+                className='flex items-center justify-center p-2 font-medium'
+                onClick={props.detectUserLocation}>
                     Use current location 
                     <UilLocationPoint className="mx-1" size={20}/>
                 </motion.button>
