@@ -27,7 +27,8 @@ function App() {
   const [showMore, setShowMore] = React.useState(false)
   const [showDropDown, setShowDropDown] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
-  const modalRef = React.useRef()
+  const modalRef = React.forwardRef()
+  const [displayCurrentLocation, setDisplayCurrentLocation] = React.useState('No current location')
 
   React.useEffect(() => {
     (async function () {
@@ -93,6 +94,7 @@ function App() {
   function detectUserLocation() {
     startTransition(() => {
       handleCloseMore()
+      setDisplayCurrentLocation({city: weather.name, country: weather.country})
     })
     if (navigator.geolocation) {
       toast.info('Fetching your location')
@@ -127,7 +129,7 @@ function App() {
         collapsed: { opacity: 0, height: "-50%" }
       }}
       transition={{type:"spring", stiffness:"100", duration: 0.8, ease: [0.04, 0.62, 0.23, 0.98] }}>
-        <DropDownContent 
+        <DropDownContent displayCurrentLocation={displayCurrentLocation}
           handleCloseMore={handleCloseMore} 
           weather={weather}/>
       </motion.div>}

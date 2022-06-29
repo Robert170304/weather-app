@@ -14,8 +14,8 @@ function DropDownContent(props) {
         <section className='flex justify-around items-center w-full my-3 p-4 border border-b-2 border-x-0 border-t-0'>
             <div className='flex flex-col'>
                 <p className='flex gap-x-2 my-1 font-light'><UilLocationArrow className="fill-red-800" /> CURRENT</p>
-                <h3 className='text-xl'>Petlad</h3>
-                <span className='text-sm font-light'>India</span>
+                <h3 className='text-xl capitalize'>{props.displayCurrentLocation.city ? props.displayCurrentLocation.city : props.displayCurrentLocation}</h3>
+                <span className='text-sm font-light'>{props.displayCurrentLocation.country ? props.displayCurrentLocation.country : ''}</span>
             </div>
             <div>
                 <img src={iconUrlFromCode(props.weather.icon)} className='w-10' alt="" />
