@@ -7,7 +7,6 @@ import TempDetails from './components/TempDetails';
 import Forecast from './components/Forecast';
 import getFormattedData from './services/WeatherServices';
 import { ToastContainer, toast } from 'react-toastify';
-import { ReactNotifications, Store } from 'react-notifications-component'
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-notifications-component/dist/theme.css'
 import Modal from './components/Modal';
@@ -18,8 +17,6 @@ import {motion, AnimatePresence} from 'framer-motion'
 
 function App() {
 
-  const [location, setLocation] = React.useState("")
-  // const currentUserCity = localStorage.getItem("usercity");
   const userLocationCoords = localStorage.getItem("userCoords");
   const [query, setQuery] = React.useState({q:'berlin' })
   const [units, setUnit] = React.useState('metric')
@@ -27,28 +24,29 @@ function App() {
   const [showMore, setShowMore] = React.useState(false)
   const [showDropDown, setShowDropDown] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
-  const modalRef = React.useRef()
   const [userQuery, setUserQuery] = React.useState(JSON.parse(userLocationCoords))
   const [displayCurrentLocation, setDisplayCurrentLocation] = React.useState(null)
 
   React.useEffect(() => {
     (async function() {
-      const msg = 'current location'
-      toast.info('Fetching weather for ' + msg)
       await getFormattedData({...userQuery, units}).then((data) => {
-        toast.success(`Successfully fetched weather for ${data.name}, ${data.country}`)
         setDisplayCurrentLocation(data)
       })
     })()
   },[userQuery])
-    
 
+  function displayToast(string, msg) {
+    const infoToast = toast.info(string + msg)
+    return infoToast
+  }
+    
   React.useEffect(() => {
     (async function () {
-      const msg = query.q ? query.q : 'current location'
-      toast.info('Fetching weather for ' + msg)
+      const msg = query.q 
+      displayToast('Fetching weather for ', msg)
       await getFormattedData({...query, units}).then((data) => {
         toast.success(`Successfully fetched weather for ${data.name}, ${data.country}`)
+        console.log(toast)
         setWeather(data)
       })
     })()
@@ -61,18 +59,6 @@ function App() {
         document.body.style.overflow = "auto";
     }
   })
-
-  // React.useEffect(() => {
-  //   function getClickOutSide(e) {
-  //     if(showMore && e.target !== modalRef.current) {
-  //       setShowMore(false);
-  //     }
-  //   }
-  //   window.addEventListener('click', getClickOutSide);
-  //   return () => {
-  //     window.removeEventListener('click', getClickOutSide);
-  //   }
-  // }, [showMore])
 
   function formatBg() {
     const thresold = units === 'metric'? 20 : 60
@@ -91,25 +77,12 @@ function App() {
     }
   }
 
-  // function settingUserLocation() {
-  //   if(location){
-  //     startTransition(() => {
-  //       handleCloseMore()
-  //     })
-  //     localStorage.setItem("usercity", location);
-  //     localStorage.removeItem('userCoords');
-  //     setQuery({q: location})
-  //   }else if(location === "") {
-  //     alert('please provide your city name')
-  //   }
-  // }
-
   function detectUserLocation() {
     startTransition(() => {
       handleCloseMore()
     })
     if (navigator.geolocation) {
-      toast.info('Fetching your location')
+      toast.info('Fetching your weather')
       navigator.geolocation.getCurrentPosition((position) => {
         let lat = position.coords.latitude
         let lon = position.coords.longitude
@@ -123,11 +96,7 @@ function App() {
 
   return (<>
     {showMore && <Modal showMore={showMore} 
-      ref={modalRef}
       handleCloseMore={handleCloseMore} 
-      // location={location}
-      // setLocation={setLocation}
-      // settingUserLocation={settingUserLocation} 
       isPending={isPending}
       detectUserLocation={detectUserLocation}/>} 
     <AnimatePresence>
@@ -157,11 +126,10 @@ function App() {
         <>
           <TimeaAndLocation weather={weather}/>
           <TempDetails weather={weather}/>
-          <Forecast title="hourly forecast" items={weather.hourly}/>
-          <Forecast title="daily forecast" items={weather.daily}/>
+          <Forecast title="hourly forecast" textColor="text-white" items={weather.hourly}/>
+          <Forecast title="daily forecast" textColor="text-white" items={weather.daily}/>
         </>
       )}
-      {/* <ReactNotifications /> */}
       <ToastContainer autoClose={5000} theme='colored' newestOnTop={true}/>
     </div>
     </>

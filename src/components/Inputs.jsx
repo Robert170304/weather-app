@@ -1,6 +1,5 @@
 import React from 'react'
 import { UilSearch, UilFahrenheit, UilCelsius } from '@iconscout/react-unicons'
-// import { toast } from 'react-toastify'
 
 function Inputs(props) {
   const [city, setCity] = React.useState("")
@@ -42,7 +41,7 @@ function Inputs(props) {
             <button name='matric' className='text-xl text-white font-light hover:scale-125 transition ease-out' onClick={chngUnitToCelsius}>
               <UilCelsius size={25} />
             </button>
-            <p className="texr-xl text-white mx-1">|</p>
+            <p className="text-xl text-white mx-1">|</p>
             <button name='inperial' className='text-xl text-white font-light hover:scale-125 transition ease-out' onClick={chngUnitToFahrenheit}>
               <UilFahrenheit size={25} />
             </button>

@@ -2,13 +2,14 @@ import React from 'react'
 import { iconUrlFromCode } from '../services/WeatherServices'
 
 function Forecast(props) {
+
   return (
     <div>
         <div className='flex items-center justify-start mt-6'>
             <p className='text-white font-medium uppercase'>{props.title}</p>
         </div>
         <hr className='my-2'/>
-        <div className='flex flex-row flex-wrap items-center justify-between text-white'>
+        <div className={`flex flex-row flex-wrap items-center justify-around ${props.textColor}`}>
             {props.items.map((item, id) => {
                 return <div className='flex flex-col items-center justify-center m-1.5' key={id}>
                     <p className='font-light text-sm'>
